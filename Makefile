@@ -13,3 +13,7 @@ run:	## test docker images
 
 login:	## login to docker container with bash
 	@docker exec -it suggest bash
+
+clean:	## clean docker containers
+	@docker rm -f suggest
+@docker rmi -f test/suggest:20170903

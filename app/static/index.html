@@ -30,6 +30,7 @@
   <script language="JavaScript">
     var collection = "hashtags";
     var field = "name";
+    var hostname = "localhost";
 
     var keyDownCode = 0;
 
@@ -37,12 +38,12 @@
             $("#tag").keyup(function(){
 
               $.ajax({
-                        url: "http://localhost:8983/solr/" + collection + "/m/suggester",
+                        url: "http://" + hostname + ":8983/solr/" + collection + "/select",
                         type: "GET",
                         cache: false,
                         crossDomain: true,
                         dataType: "jsonp",
-                        data: {qq:$(this).val()},
+                        data: {q:$(this).val(), defType:"edismax", fl:"hash_tag_suggest, query_num, hit_num", qf:"ngram", sort:"query_num DESC", wt:"json"},
                         jsonp: 'json.wrf',
                         success: function(o){
                         var values = new Array();
@@ -59,18 +60,16 @@
                         },
                         error: function(xhr, ts, err){
                           alert(err);
-                          response();
                         }
                     });
-              //});
 
               $.ajax({
-                        url: "http://localhost:8983/solr/" + collection + "/m/suggester",
+                        url: "http://" + hostname + ":8983/solr/" + collection + "/select",
                         type: "GET",
                         cache: false,
                         crossDomain: true,
                         dataType: "jsonp",
-                        data: {qq:$(this).val()},
+                        data: {q:$(this).val(), defType:"edismax", fl:"hash_tag_suggest, query_num, hit_num", qf:"ngram2", sort:"hit_num DESC, query_num DESC", wt:"json"},
                         jsonp: 'json.wrf',
                         success: function(o){
                         var values = new Array();
@@ -87,18 +86,16 @@
                         },
                         error: function(xhr, ts, err){
                           alert(err);
-                          response();
                         }
                     });
-            //});
 
             $.ajax({
-                        url: "http://localhost:8983/solr/" + collection + "/m/suggester",
+                        url: "http://" + hostname + ":8983/solr/" + collection + "/select",
                         type: "GET",
                         cache: false,
                         crossDomain: true,
                         dataType: "jsonp",
-                        data: {qq:$(this).val()},
+                        data: {q:$(this).val(), defType:"edismax", fl:"hash_tag_suggest, query_num, hit_num", qf:"ngram4", sort:"hit_num DESC, query_num DESC", wt:"json"},
                         jsonp: 'json.wrf',
                         success: function(o){
                         var values = new Array();
@@ -115,13 +112,11 @@
                         },
                         error: function(xhr, ts, err){
                           alert(err);
-                          response();
                         }
                     });
-            //});
 
             $.ajax({
-                        url: "http://localhost:8983/solr/" + collection + "/m/suggester",
+                        url: "http://" + hostname + ":8983/solr/" + collection + "/m/suggester",
                         type: "GET",
                         cache: false,
                         crossDomain: true,
@@ -143,13 +138,11 @@
                         },
                         error: function(xhr, ts, err){
                           alert(err);
-                          response();
                         }
                     });
-            //});
 
             $.ajax({
-                        url: "http://localhost:8983/solr/" + collection + "/m/suggester",
+                        url: "http://" + hostname + ":8984/solr/" + collection + "/m/suggester",
                         type: "GET",
                         cache: false,
                         crossDomain: true,
@@ -171,7 +164,6 @@
                         },
                         error: function(xhr, ts, err){
                           alert(err);
-                          response();
                         }
                     });
             });
