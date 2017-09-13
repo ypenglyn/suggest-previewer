@@ -8,6 +8,10 @@
 
   <link rel="stylesheet" href="static/css/ui-lightness/jquery-ui-1.10.3.custom.css" type="text/css">
   <style>
+  * {
+      font-size: 100%;
+      font-family: Arial;
+    }
     .textbox {
       background: white;
       border: 1px solid #DDD;
@@ -18,45 +22,6 @@
       height:25px;
       width: 275px;
     }
-    .query-box {
-      margin:0 auto;
-    }
-
-  </style>
-
-  <style type="text/css">
-    .css_btn_class {
-      font-size:12px;
-      font-family:Arial;
-      font-weight:normal;
-      -moz-border-radius:8px;
-      -webkit-border-radius:8px;
-      border-radius:8px;
-      border:1px solid #3866a3;
-      padding:5px 18px;
-      text-decoration:none;
-      background:-webkit-gradient( linear, left top, left bottom, color-stop(5%, #63b8ee), color-stop(100%, #468ccf) );
-      background:-moz-linear-gradient( center top, #63b8ee 5%, #468ccf 100% );
-      background:-ms-linear-gradient( top, #63b8ee 5%, #468ccf 100% );
-      filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#63b8ee', endColorstr='#468ccf');
-      background-color:#63b8ee;
-      color:#ffffff;
-      display:inline-block;
-      text-shadow:1px 1px 0px #7cacde;
-      -webkit-box-shadow:inset 1px 1px 0px 0px #bee2f9;
-      -moz-box-shadow:inset 1px 1px 0px 0px #bee2f9;
-      box-shadow:inset 1px 1px 0px 0px #bee2f9;
-    }.css_btn_class:hover {
-      background:-webkit-gradient( linear, left top, left bottom, color-stop(5%, #468ccf), color-stop(100%, #63b8ee) );
-      background:-moz-linear-gradient( center top, #468ccf 5%, #63b8ee 100% );
-      background:-ms-linear-gradient( top, #468ccf 5%, #63b8ee 100% );
-      filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee');
-      background-color:#468ccf;
-    }.css_btn_class:active {
-      position:relative;
-      top:1px;
-    }
-
 
   </style>
 
@@ -69,96 +34,150 @@
     var keyDownCode = 0;
 
         $(function(){
-            $("#suggest").autocomplete({
-                search: function(event, ui){
-                    //if (event.keyCode == 229) return false;
-                    return true;
-                },
-                source: function(request, response){
-          $.ajax({
+            $("#tag").keyup(function(){
+
+              $.ajax({
                         url: "http://localhost:8983/solr/" + collection + "/m/suggester",
                         type: "GET",
                         cache: false,
                         crossDomain: true,
                         dataType: "jsonp",
-                        data: {qq:request.term},
+                        data: {qq:$(this).val()},
                         jsonp: 'json.wrf',
                         success: function(o){
-                                //console.log(o);
-                                //console.log(JSON.stringify(o));
-              var values = new Array();
-              for(var i = 0; i < o.response.docs.length; i++){
-                values.push(o.response.docs[i].hash_tag_suggest);
-              }
-              response(values);
+                        var values = new Array();
+                        for(var i = 0; i < o.response.docs.length; i++){
+                          values.push(o.response.docs[i].hash_tag_suggest);
+                        }
 
+                        var slist = $("#compare-1 .ui-autocomplete");
+                        slist.empty();
+                        $.each(values, function(i){
+                          var li = $('<li/>').addClass('ui-menu-item').attr('role', 'presentation').appendTo(slist);
+                          var aaa = $('<a/>').addClass('ui-corner-all').text(values[i]).appendTo(li);
+                        });
                         },
                         error: function(xhr, ts, err){
-              alert(err);
-              response();
+                          alert(err);
+                          response();
                         }
                     });
-                },
-                open: function() {
-                    $(this).removeClass("ui-corner-all");
-                }
-            }).keyup(function(event){
-                if (event.keyCode == 13) {
-                    //$(this).autocomplete("search");
-                }
-                if (event.which == 13 && event.which == keyDownCode) {
-                    $("#didyoumean_hashtag").click();
-                }
-            }).keydown(function(event) {
-                keyDownCode = event.which;
-            });
-        });
+              //});
 
-$(function(){
-            $("#suggest_neologd").autocomplete({
-                search: function(event, ui){
-                    //if (event.keyCode == 229) return false;
-                    return true;
-                },
-                source: function(request, response){
-          $.ajax({
+              $.ajax({
                         url: "http://localhost:8983/solr/" + collection + "/m/suggester",
                         type: "GET",
                         cache: false,
                         crossDomain: true,
                         dataType: "jsonp",
-                        data: {qq:request.term},
+                        data: {qq:$(this).val()},
                         jsonp: 'json.wrf',
                         success: function(o){
-                                //console.log(o);
-                                //console.log(JSON.stringify(o));
-              var values = new Array();
-              for(var i = 0; i < o.response.docs.length; i++){
-                values.push(o.response.docs[i].hash_tag_suggest);
-              }
-              response(values);
+                        var values = new Array();
+                        for(var i = 0; i < o.response.docs.length; i++){
+                          values.push(o.response.docs[i].hash_tag_suggest);
+                        }
 
+                        var slist = $("#compare-2 .ui-autocomplete");
+                        slist.empty();
+                        $.each(values, function(i){
+                          var li = $('<li/>').addClass('ui-menu-item').attr('role', 'presentation').appendTo(slist);
+                          var aaa = $('<a/>').addClass('ui-corner-all').text(values[i]).appendTo(li);
+                        });
                         },
                         error: function(xhr, ts, err){
-              alert(err);
-              response();
+                          alert(err);
+                          response();
                         }
                     });
-                },
-                open: function() {
-                    $(this).removeClass("ui-corner-all");
-                }
-            }).keyup(function(event){
-                if (event.keyCode == 13) {
-                    //$(this).autocomplete("search");
-                }
-                if (event.which == 13 && event.which == keyDownCode) {
-                    $("#didyoumean_hashtag_neologd").click();
-                }
-            }).keydown(function(event) {
-                keyDownCode = event.which;
+            //});
+
+            $.ajax({
+                        url: "http://localhost:8983/solr/" + collection + "/m/suggester",
+                        type: "GET",
+                        cache: false,
+                        crossDomain: true,
+                        dataType: "jsonp",
+                        data: {qq:$(this).val()},
+                        jsonp: 'json.wrf',
+                        success: function(o){
+                        var values = new Array();
+                        for(var i = 0; i < o.response.docs.length; i++){
+                          values.push(o.response.docs[i].hash_tag_suggest);
+                        }
+
+                        var slist = $("#compare-3 .ui-autocomplete");
+                        slist.empty();
+                        $.each(values, function(i){
+                          var li = $('<li/>').addClass('ui-menu-item').attr('role', 'presentation').appendTo(slist);
+                          var aaa = $('<a/>').addClass('ui-corner-all').text(values[i]).appendTo(li);
+                        });
+                        },
+                        error: function(xhr, ts, err){
+                          alert(err);
+                          response();
+                        }
+                    });
+            //});
+
+            $.ajax({
+                        url: "http://localhost:8983/solr/" + collection + "/m/suggester",
+                        type: "GET",
+                        cache: false,
+                        crossDomain: true,
+                        dataType: "jsonp",
+                        data: {qq:$(this).val()},
+                        jsonp: 'json.wrf',
+                        success: function(o){
+                        var values = new Array();
+                        for(var i = 0; i < o.response.docs.length; i++){
+                          values.push(o.response.docs[i].hash_tag_suggest);
+                        }
+
+                        var slist = $("#compare-4 .ui-autocomplete");
+                        slist.empty();
+                        $.each(values, function(i){
+                          var li = $('<li/>').addClass('ui-menu-item').attr('role', 'presentation').appendTo(slist);
+                          var aaa = $('<a/>').addClass('ui-corner-all').text(values[i]).appendTo(li);
+                        });
+                        },
+                        error: function(xhr, ts, err){
+                          alert(err);
+                          response();
+                        }
+                    });
+            //});
+
+            $.ajax({
+                        url: "http://localhost:8983/solr/" + collection + "/m/suggester",
+                        type: "GET",
+                        cache: false,
+                        crossDomain: true,
+                        dataType: "jsonp",
+                        data: {qq:$(this).val()},
+                        jsonp: 'json.wrf',
+                        success: function(o){
+                        var values = new Array();
+                        for(var i = 0; i < o.response.docs.length; i++){
+                          values.push(o.response.docs[i].hash_tag_suggest);
+                        }
+
+                        var slist = $("#compare-5 .ui-autocomplete");
+                        slist.empty();
+                        $.each(values, function(i){
+                          var li = $('<li/>').addClass('ui-menu-item').attr('role', 'presentation').appendTo(slist);
+                          var aaa = $('<a/>').addClass('ui-corner-all').text(values[i]).appendTo(li);
+                        });
+                        },
+                        error: function(xhr, ts, err){
+                          alert(err);
+                          response();
+                        }
+                    });
             });
         });
+
+
 
 
   </script>
@@ -166,26 +185,45 @@ $(function(){
 
 <h2>ハッシタグ サジェスト比較</h2>
 <hr>
-<div idx="compare" style="width:100%;">
-  <div id="compare-left" style="width:30%; float:left; margin:10%;">
-    <h3>Kuromoji + base dictionary</h3>
-    <div class="query-box">
-      <input style="font-size: 12pt;" class="textbox" type="text" id="suggest" name="qq" value=""
-             autocomplete="off"/>
-      <input class="css_btn_class" type="button" id="didyoumean_hashtag" name="search"
-             value="Search"/>
-    </div>
+<input style="font-size: 12pt;" class="textbox" type="text" id="tag" name="query" value=""
+       autocomplete="off"/>
+<hr>
+<div id="compare" style="width:100%;">
+
+  <div id="compare-1" style="width:18%; float:left; margin:1%;">
+
+    <h3>(1) JP + Reading => edge ngram tokenizer(base)</h3>
+    <ul class="ui-autocomplete ui-front ui-menu ui-widget ui-widget-content ui-corner-all" style="position: relative;">
+    </ul>
   </div>
-  <div id="compare-right" style="width:30%; float:right; margin:10%">
-    <h3>Kuromoji + neologd</h3>
-    <div class="query-box">
-      <input style="font-size: 12pt;" class="textbox" type="text" id="suggest_neologd" name="qq"
-             value=""
-             autocomplete="off"/>
-      <input class="css_btn_class" type="button" id="didyoumean_hashtag_neologd" name="search"
-             value="Search"/>
-    </div>
+  <div id="compare-2" style="width:18%; float:left; margin:1%;">
+
+    <h3>(2) JP => JP tokenizer => edge ngram filter<h3>
+    <ul class="ui-autocomplete ui-front ui-menu ui-widget ui-widget-content ui-corner-all" style="position: relative;">
+    </ul>
   </div>
+
+  <div id="compare-3" style="width:18%; float:left; margin:1%;">
+
+    <h3>(3) JP => JP tokenizer => edge ngram filter => Romaji</h3>
+    <ul class="ui-autocomplete ui-front ui-menu ui-widget ui-widget-content ui-corner-all" style="position: relative;">
+    </ul>
+  </div>
+
+  <div id="compare-4" style="width:18%; float:left; margin:1%;">
+
+    <h3>(4) 2 JOIN 3 with kuromoji base dictionary</h3>
+    <ul class="ui-autocomplete ui-front ui-menu ui-widget ui-widget-content ui-corner-all" style="position: relative;">
+    </ul>
+  </div>
+
+  <div id="compare-5" style="width:18%; float:left; margin:1%;">
+
+    <h3>(5) 2 JOIN 3 with neologd(20170904)</h3>
+    <ul class="ui-autocomplete ui-front ui-menu ui-widget ui-widget-content ui-corner-all" style="position: relative;">
+    </ul>
+  </div>
+
 </div>
 </body>
 
